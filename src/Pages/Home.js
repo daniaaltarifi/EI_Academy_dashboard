@@ -13,6 +13,7 @@ function Home() {
   const [libraries, setLibraries] = useState([]);
   const [blogs, setBlogs] = useState([]);
   const [comments, setComments] = useState([]);
+  const [tedstBank,setTesBank] = useState([]);
 
   const length = [
     {
@@ -57,6 +58,12 @@ function Home() {
       numLength: comments.length,
       link: "/comments",
     },
+    {
+      id: 8,
+      title: "بنك الاسئلة",
+      numLength: tedstBank.length,
+      link: "/testBank",
+    },
   ];
   useEffect(() => {
     const fetchData = async () => {
@@ -69,6 +76,7 @@ function Home() {
           libraryResponse,
           blogResponse,
           commentsResponse,
+          testBankResponse
         ] = await Promise.all([
           axios.get(`${API_URL}/departments/getDepartments`),
           axios.get(`${API_URL}/Courses`),
@@ -77,6 +85,7 @@ function Home() {
           axios.get(`${API_URL}/Libraries/getLibraries`),
           axios.get(`${API_URL}/blog/All-blogs`),
           axios.get(`${API_URL}/Comments/getComments`),
+          axios.get(`${API_URL}/testbank/gettestbank`)
         ]);
         const usersData = usersResponse.data;
         const student = usersData.filter((user) => user.role === "student");
@@ -87,6 +96,7 @@ function Home() {
         setLibraries(libraryResponse.data);
         setBlogs(blogResponse.data);
         setComments(commentsResponse.data);
+        setTesBank(testBankResponse.data)
       } catch (error) {
         console.log(`Error getting data from frontend: ${error}`);
       }

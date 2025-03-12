@@ -68,6 +68,8 @@ import TeacherAddBlog from "./Teacher/TeacherAddBlog.js";
 import ResetPassword from "./Pages/ResetPassword.js";
 import ForgetPassword from "./Pages/ForgetPassword.js";
 import axios from "axios";
+import TestBankPage from "./Pages/TestBankPage.js";
+import AddTestBank from "./Pages/AddTestBank.js";
 export const API_URL='http://localhost:6067'
 // export const API_URL='https://eiacademybackend.kassel.icu'
 
@@ -127,7 +129,9 @@ const AppRouterAdmin = () => {
           {/* <Route path="/forgotPassword"  element={<ForgetPassword />}/> */}
           <Route path="/department" element={<ProtectedRoute element={<Department />}/> } />
           <Route path="/courses" element={<ProtectedRoute element={<Courses />}/>} />
+          <Route path="/testBank" element={<ProtectedRoute element={<TestBankPage />}/>} />
           <Route path="/addcourse" element={<ProtectedRoute element={<AddCourse />} />}/>
+          <Route path="/addtestbank" element={<ProtectedRoute element={<AddTestBank />} />}/>
           <Route path="/updatecourse" element={<ProtectedRoute element={<UpdateCourse />}/>} />
           
           <Route path="/addteacher" element={<ProtectedRoute element={<AddTeacher />}/>} />
