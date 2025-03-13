@@ -54,6 +54,11 @@ const Sidebar = () => {
           </Link>
         </li>
         <li>
+        <Link to="/testBank" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/questions.png")} alt=""className="img-fluid "width={"25px"} /> 
+          </Link>
+        </li>
+        <li>
         <Link to="/teacher" onClick={handleBackground} className="background_icon">
             <img src={require("../assets/teacher.png")} alt=""className="img-fluid icon_sidebar" /> 
           </Link>

@@ -15,6 +15,8 @@ function AddCouponCode() {
   const [department_id, setDepartmentId] = useState("");
   const [coursesData, setCoursesData] = useState([]);
   const [course_id, setCourseId] = useState("");
+  const [testBankData, setTestBankData] = useState([]);
+  const [testBank_id, setTestBank_Id] = useState("");
 
   const navigate = useNavigate();
 
@@ -41,13 +43,22 @@ function AddCouponCode() {
         }
       };
       fetchCourses();
-    
+      const fetchTestBank = async () => {
+        try {
+          const response = await axios.get(`${API_URL}/testbank/gettestbank`);
+          setTestBankData(response.data);
+        } catch (error) {
+          console.error("Error fetching courses:", error);
+        }
+      };
+      fetchTestBank();
   }, []);
 
   const handleDepartment = (e) => {
     const selectedDepartmentId = e.target.value;
     setDepartmentId(selectedDepartmentId);
     setCourseId(""); // Clear selected course when department changes
+    setTestBank_Id("")
   };
 
   const handleCourses = (e) => {
@@ -56,7 +67,12 @@ function AddCouponCode() {
     setDepartmentId("");
 
   };
+  const handleTestBank = (e) => {
+    const selectedTestBankId = e.target.value;
+    setTestBank_Id(selectedTestBankId);
+    setDepartmentId("");
 
+  };
   const handlePost = async () => {
     if (!expiration_date ||!coupon_code || (coupon_type === "department" && !department_id )|| (coupon_type === "course" && !course_id) ) {
       Toastify({
@@ -72,7 +88,7 @@ function AddCouponCode() {
     try {
       const response = await axios.post(
         `${API_URL}/Coupons/addCoupon`,
-        { coupon_code, coupon_type, expiration_date, department_id, course_id }
+        { coupon_code, coupon_type, expiration_date, department_id, course_id,testBank_id }
       );
       Toastify({
         text: "Added successfully",
@@ -117,6 +133,9 @@ function AddCouponCode() {
             >
               <option value="course">مادة</option>
               <option value="department">قسم</option>
+              <option value="testBank">بنك اسئلة</option>
+              <option value="courseandtestbank">باقة</option>
+
             </select>
           </div>
         </div>
@@ -160,8 +179,65 @@ function AddCouponCode() {
             </div>
           </div>
         )}
+ {coupon_type === "testBank" && (
+          <div className="row mt-4 d-flex justify-content-center align-items-center">
+            <div className="col-lg-4 col-md-6 col-sm-12">
+              <p className="input_title_addcourse">بنك اسئلة</p>
+              <select
+                name="course"
+                value={testBank_id}
+                onChange={handleTestBank}
+                className="input_addcourse"
+              >
+                <option value="">اختر بنك اسئلة</option>
+                {testBankData.map((testBank) => (
+                  <option key={testBank.id} value={testBank.id}>
+                    {testBank.testBankCourse_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+ {coupon_type === "courseandtestbank" && (
+          <div className="row d-flex justify-content-center align-items-center">
+            <div className="row mt-4 d-flex justify-content-center align-items-center">
+            <div className="col-lg-4 col-md-6 col-sm-12">
+              <p className="input_title_addcourse">مادة</p>
+              <select
+                name="course"
+                value={course_id}
+                onChange={handleCourses}
+                className="input_addcourse"
+              >
+                <option value="">اختر مادة</option>
+                {coursesData.map((cor) => (
+                  <option key={cor.id} value={cor.id}>
+                    {cor.subject_name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-
+          </div>
+          <div className="col-lg-4 col-md-6 col-sm-12">
+              <p className="input_title_addcourse">بنك اسئلة</p>
+              <select
+                name="course"
+                value={testBank_id}
+                onChange={handleTestBank}
+                className="input_addcourse"
+              >
+                <option value="">اختر بنك اسئلة</option>
+                {testBankData.map((testBank) => (
+                  <option key={testBank.id} value={testBank.id}>
+                    {testBank.testBankCourse_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
         <div className="row mt-4 d-flex justify-content-center align-items-center">
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">تاريخ انتهاء الكوبون</p>

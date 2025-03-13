@@ -20,7 +20,8 @@ function UpdateCoupon() {
   const [coursesData, setCoursesData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [testBankData, setTestBankData] = useState([]);
+  const [testBank_id, setTestBank_Id] = useState("");
   useEffect(() => {
     if (location.state && location.state.id) {
       setCouponId(location.state.id);
@@ -43,6 +44,7 @@ function UpdateCoupon() {
           setCoupon_type(contactDetails.coupon_type);
           setCourse_id(contactDetails.course_id || "");
           setDepartment_id(contactDetails.department_id || "");
+          setTestBank_Id(contactDetails.testBank_id || "")
           const formattedDate = new Date(contactDetails.expiration_date)
             .toISOString()
             .split("T")[0];
@@ -60,13 +62,16 @@ function UpdateCoupon() {
 
     const fetchData = async () => {
       try {
-        const [deptRes, courseRes] = await Promise.all([
+        const [deptRes, courseRes,testbankRes] = await Promise.all([
           axios.get(`${API_URL}/departments/getDepartments`),
           axios.get(`${API_URL}/Courses`),
+          axios.get(`${API_URL}/testbank/gettestbank`)
         ]);
 
         setDepartmentData(deptRes.data);
         setCoursesData(courseRes.data);
+        setTestBankData(testbankRes.data);
+
       } catch (err) {
         console.error("Error fetching data:", err);
       }
@@ -154,6 +159,8 @@ function UpdateCoupon() {
             >
               <option value="course">مادة</option>
               <option value="department">قسم</option>
+              <option value="testBank">بنك اسئلة</option>
+              <option value="courseandtestbank">باقة</option>
             </select>
           </div>
 
@@ -207,7 +214,61 @@ function UpdateCoupon() {
             </div>
           </div>
         )}
+ {coupon_type === "testBank" && (
+            <div className="col-lg-4 col-md-6 col-sm-12">
+              <p className="input_title_addcourse">بنك اسئلة</p>
+              <select
+                name="course"
+                value={testBank_id}
+                onChange={(e)=>setTestBank_Id(e.target.value)}
+                className="input_addcourse"
+              >
+                <option value="">اختر بنك اسئلة</option>
+                {testBankData.map((testBank) => (
+                  <option key={testBank.id} value={testBank.id}>
+                    {testBank.testBankCourse_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+        )}
+ {coupon_type === "courseandtestbank" && (
+            <div className="row mt-4 d-flex justify-content-center align-items-center">
+            <div className="col-lg-4 col-md-6 col-sm-12">
+              <p className="input_title_addcourse">مادة</p>
+              <select
+                name="course"
+                value={course_id}
+                onChange={(e) => setCourse_id(e.target.value)}
+                className="input_addcourse"
+              >
+                <option value="">اختر مادة</option>
+                {coursesData.map((cor) => (
+                  <option key={cor.id} value={cor.id}>
+                    {cor.subject_name}
+                  </option>
+                ))}
+              </select>
 
+          </div>
+          <div className="col-lg-4 col-md-6 col-sm-12">
+              <p className="input_title_addcourse">بنك اسئلة</p>
+              <select
+                name="course"
+                value={testBank_id}
+                onChange={(e)=>setTestBank_Id(e.target.value)}
+                className="input_addcourse"
+              >
+                <option value="">اختر بنك اسئلة</option>
+                {testBankData.map((testBank) => (
+                  <option key={testBank.id} value={testBank.id}>
+                    {testBank.testBankCourse_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
         <div className="row mt-4 d-flex justify-content-center align-items-center">
           <div className="d-flex justify-content-center align-items-center">
             <button

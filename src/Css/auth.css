@@ -115,7 +115,7 @@
     margin-left: 5px;
   }
   .purple_btn:hover{
-    background-color: #a767ac;
+    background-color: #f8c36e;
   }
   @media screen and (max-width: 992px) {
     .select_role_auth{

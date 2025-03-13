@@ -10,11 +10,13 @@ import { useNavigate } from "react-router-dom";
 
 function AddTestBank() {
   const [excelFile, setExcelFile] = useState(null);
-  const [testName, setTestName] = useState("");
-  const [departmentId, setDepartmentId] = useState("");
+  const [before_price, setbefore_price] = useState("");
+  const [after_price, setafter_price] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
-  const [departmentData, setDepartmentData] = useState([]);
+    const [img, setImg] = useState(null);
+    const [selectedDefaultVideo, setSelectedDefaultVideo] = useState(null);
+  
   const navigate = useNavigate();
 
 
@@ -34,31 +36,31 @@ function AddTestBank() {
     }
     setExcelFile(file);
   };
-
-  const handleDepartment = (e) => {
-    const selectedDepartmentId = e.target.value;
-    setDepartmentId(selectedDepartmentId);
+  const handleDefaultVideo = (e) => {
+    const file = e.target.files[0];
+    // if (file && file.size > MAX_FILE_SIZE) {
+    //   Toastify({
+    //     text: "File size exceeds the 1 GB limit",
+    //     duration: 3000,
+    //     gravity: "top",
+    //     position: "right",
+    //     background: "#CA1616",
+    //   }).showToast();
+    //   return; // Prevent file from being uploaded
+    // }
+    setSelectedDefaultVideo(file);
   };
+ 
 
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const response = await axios.get(
-          `${API_URL}/departments/getDepartments`
-        );
-        setDepartmentData(response.data);
-      } catch (error) {
-        console.error("Error fetching departments:", error);
-      }
-    };
 
-    fetchDepartments();
-  }, []);
-
+  const handleImg = (e) => {
+    const file = e.target.files[0];
+    setImg(file);
+  };
   const handleSubmit = async () => {
     setLoading(true);
 
-    if (!testName || !departmentId || !description || !excelFile) {
+    if (!before_price || !after_price || !description || !img || !selectedDefaultVideo || !excelFile) {
       Toastify({
         text: "الرجاء ملء جميع الحقول",
         duration: 3000,
@@ -72,13 +74,15 @@ function AddTestBank() {
 
     try {
       const formData = new FormData();
-      formData.append("test_name", testName);
-      formData.append("department_id", departmentId);
       formData.append("description", description);
-      formData.append("excel_file", excelFile);
+      formData.append("before_price", before_price);
+      formData.append("after_price", after_price);
+      formData.append("image", img);
+      formData.append("video", selectedDefaultVideo);
+      formData.append("excelsheet", excelFile);
 
       const response = await axios.post(
-        `${API_URL}/TestBank/addtestbank`,
+        `${API_URL}/testbank/addtestbank`,
         formData,
         {
           headers: {
@@ -94,7 +98,7 @@ function AddTestBank() {
         position: "right",
         backgroundColor: "#018abe",
       }).showToast();
-      navigate("/testbanks");
+      navigate("/testbank");
     } catch (error) {
       if (error.response && error.response.status === 413) {
         Toastify({
@@ -130,29 +134,20 @@ function AddTestBank() {
         </div>
         <div className="row mt-4">
           <div className="col-lg-4 col-md-6 col-sm-12">
-            <p className="input_title_addcourse">اسم الاختبار</p>
+            <p className="input_title_addcourse">السعر قبل الخصم</p>
             <input
-              type="text"
+              type="number"
               className="input_addcourse"
-              onChange={(e) => setTestName(e.target.value)}
+              onChange={(e) => setbefore_price(e.target.value)}
             />
           </div>
           <div className="col-lg-4 col-md-6 col-sm-12">
-            <p className="input_title_addcourse">القسم</p>
-            <select
-              name="department"
-              value={departmentId}
-              onChange={handleDepartment}
-              id="lang"
-              className="select_dep"
-            >
-              <option value="">اختر قسم</option>
-              {departmentData.map((dep) => (
-                <option key={dep.id} value={dep.id}>
-                  {dep.title}
-                </option>
-              ))}
-            </select>
+            <p className="input_title_addcourse">السعر بعد الخصم</p>
+            <input
+              type="number"
+              className="input_addcourse"
+              onChange={(e) => setafter_price(e.target.value)}
+            />
           </div>
         </div>
         <div className="row mt-4">
@@ -165,9 +160,48 @@ function AddTestBank() {
             ></textarea>
           </div>
         </div>
+        <div className="row mt-5">
 
-
-
+        <div className="col-lg-4 col-md-6 col-sm-12">
+            <p className="input_title_addcourse">صورة بنك الاسئلة</p>
+            <div className="file-input-container">
+              <input
+                type="file"
+                className="choose_file_addcourse"
+                onChange={handleImg}
+              />{" "}
+              <span className="ps-5">اختر صورة </span>
+              {img && <span>{img.name}</span>}
+              {!img && (
+                <span className="selected_file_addcourse">
+                  No file selected
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="col-lg-4 col-md-6 col-sm-12">
+            <p className="input_title_addcourse">فيديو مقدمة</p>
+            <div className="file-input-container">
+              <input
+                type="file"
+                className="choose_file_addcourse"
+                onChange={handleDefaultVideo}
+                accept="video/*"
+              />
+              <span className="ps-5 selected_file_addcourse">اختر فيديو</span>
+              {selectedDefaultVideo && (
+                <span className="selected_file_addcourse">
+                  {selectedDefaultVideo.name}
+                </span>
+              )}
+              {!selectedDefaultVideo && (
+                <span className="selected_file_addcourse ">
+                  No file selected
+                </span>
+              )}
+            </div>
+</div>
+</div>
         <div className="row mt-5">
           <div className="col-lg-6 col-md-12 col-sm-12">
             <p className="input_title_addcourse">ملف بنك الأسئلة (Excel)</p>

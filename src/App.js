@@ -70,8 +70,8 @@ import ForgetPassword from "./Pages/ForgetPassword.js";
 import axios from "axios";
 import TestBankPage from "./Pages/TestBankPage.js";
 import AddTestBank from "./Pages/AddTestBank.js";
-export const API_URL='http://localhost:6067'
-// export const API_URL='https://eiacademybackend.kassel.icu'
+// export const API_URL='http://localhost:6067'
+export const API_URL='https://eiacademybackend.kassel.icu'
 
 function AppContent() {
   const location = useLocation();

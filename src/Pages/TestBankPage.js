@@ -183,7 +183,7 @@ function TestBankPage() {
                 <thead>
                   <tr className="table_head_cardprice">
                     <th className="desc_table_cardprice">اسم بنك الأسئلة</th>
-                    <th className="desc_table_cardprice">المادة</th>
+                    <th className="desc_table_cardprice">الفصل</th>
                     <th className="desc_table_cardprice">الإجراء</th>
                   </tr>
                 </thead>
@@ -194,11 +194,11 @@ function TestBankPage() {
                         <td>{testBank.testBankCourse_name}</td>
                         <td>{testBank.semester}</td>
                         <td>
-                          <i
+                          {/* <i
                             className="fa-regular fa-pen-to-square fa-lg ps-2"
                             style={{ color: "#6dab93", cursor: "pointer" }}
                             onClick={() => handleUpdate(testBank.id)}
-                          ></i>
+                          ></i> */}
                           <i
                             className="fa-regular fa-trash-can fa-lg"
                             style={{ color: "#944b43", cursor: "pointer" }}

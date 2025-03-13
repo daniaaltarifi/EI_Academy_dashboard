@@ -19,6 +19,7 @@ function Coupon() {
   const [coupons, setCoupons] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [testBank, setTestBank] = useState([]);
   const navigate = useNavigate();
   const [currentId, setCurrentId] = useState(null);
   const [filterType, setFilterType] = useState("all"); // Filter type: 'all', 'course', 'department'
@@ -27,15 +28,17 @@ function Coupon() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [couponRes, deptRes, courseRes] = await Promise.all([
+        const [couponRes, deptRes, courseRes,testbankRes] = await Promise.all([
           axios.get(`${API_URL}/Coupons/getCoupons`),
           axios.get(`${API_URL}/departments/getDepartments`),
           axios.get(`${API_URL}/Courses`),
+          axios.get(`${API_URL}/testbank/gettestbank`)
         ]);
 
         setCoupons(couponRes.data);
         setDepartments(deptRes.data);
         setCourses(courseRes.data);
+        setTestBank(testbankRes.data)
       } catch (error) {
         console.log(`Error getting data from frontend: ${error}`);
       }
@@ -143,6 +146,17 @@ function Coupon() {
       const course = courses.find((cor) => cor.id === coupon.course_id);
       return course ? course.subject_name : "Unknown Course";
     }
+    else if (coupon.coupon_type === "testBank") {
+      const testbank = testBank.find((test) => test.id === coupon.testBank_id );
+      return testbank ? testbank.testBankCourse_name : "Unknown testbank name";
+    }
+    else if (coupon.coupon_type === "courseandtestbank") {
+      const course = courses.find((cor) => cor.id === coupon.course_id);
+      const testbank = testBank.find((test) => test.id === coupon.testBank_id);
+      const courseTitle = course ? course.subject_name : "Unknown Course";
+      const testbankTitle = testbank ? testbank.testBankCourse_name : "Unknown testbank name";
+      return `${courseTitle} & ${testbankTitle}`; // Concatenate both titles
+    }
     return "N/A";
   };
 
@@ -224,11 +238,19 @@ function Coupon() {
                     <tr key={couponData.id}>
                       <td>{couponData.coupon_code}</td>
                       <td>
-                        {couponData.coupon_type === "course" ? "مادة" : "قسم"}
+                        {couponData.coupon_type === "course"
+                          ? "مادة"
+                          : couponData.coupon_type === "department"
+                          ? "قسم"
+                          : couponData.coupon_type === "testBank"
+                          ? "بنك اسئلة"
+                          : "باقة"}
                       </td>
                       <td>{getAdditionalInfo(couponData)}</td>{" "}
                       {/* Display department or course info */}
-                      <td>{couponData.used === true ? "مستخدم" : "غير مستخدم"}</td>{" "}
+                      <td>
+                        {couponData.used === true ? "مستخدم" : "غير مستخدم"}
+                      </td>{" "}
                       {/* Display used status */}
                       <td>
                         {new Date(
